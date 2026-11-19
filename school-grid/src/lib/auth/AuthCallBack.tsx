@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import { SupaBaseClientFunction } from '../lib/SupaBaseClient/SupaBaseClientFunction';
-import { resolveUserRoleAccess } from '../lib/auth/resolveUserRole';
+import { SupaBaseClientFunction } from '../SupaBaseClient/SupaBaseClientFunction';
+import { resolveUserRoleAccess } from '../auth/resolveUserRole';
 
 /* Landing page for Google (OAuth) sign-in: /auth/callback */
 export default function AuthCallback() {
