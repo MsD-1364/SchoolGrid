@@ -1,0 +1,23 @@
+user_id,created_at,user_full_name,user_email,user_password,user_role,is_active
+0a7b4e15-c8d2-4a63-b19f-3e5c7a9d2b07,2026-09-28 10:26:24.633528+00,Vishnu Prasad,vishnu.prasad@example.com,Vish@1122,Seller,false
+1b8c5f26-d9e3-4b74-a20e-4f6d8bae3c08,2026-09-28 10:26:24.633528+00,Nisha Thomas,nisha.thomas@example.com,Nisha$3344,Seller,true
+2c9d6a37-eaf4-4c85-b31f-5a7e9cbf4d09,2026-09-28 10:26:24.633528+00,Abdul Rahman,abdul.rahman@example.com,Abdul@5566,Seller,true
+3dae7b48-fb05-4d96-842a-6b8fadc05e10,2026-09-28 10:26:24.633528+00,Divya Suresh,divya.suresh@example.com,Divya#7788,Seller,true
+3f8a1c52-7b4e-4d2a-9c61-0e5b8a7d1f01,2026-09-28 10:26:24.633528+00,Arjun Menon,arjun.menon@example.com,Sell@1234,Seller,true
+45c3bde0-e934-4f7e-b36e-d2a514aab1f3,2026-09-28 08:51:10.56292+00,Muhammad Shafee Alam,shafeealam1364@gmail.com,MsD@6413,Admin,true
+4e1a7c93-2b58-4d06-a3f7-8c9e1d5b6a11,2026-09-28 10:38:49.886057+00,Suresh Kumar,suresh.kumar@example.com,Admin@1234,Admin,true
+5f2b8da4-3c69-4e17-b4a8-9daf2e6c7b12,2026-09-28 10:38:49.886057+00,Meera Varghese,meera.varghese@example.com,Admin#5678,Admin,true
+6a3c9eb5-4d7a-4f28-85b9-aeb03f7d8c13,2026-09-28 10:38:49.886057+00,Aswin Raj,aswin.raj@example.com,Cust@1001,Customer,true
+7b4daf06-5e8b-4a39-96ca-bfc140a8e914,2026-09-28 10:38:49.886057+00,Neha Joseph,neha.joseph@example.com,Cust#1002,Customer,true
+8c5eb017-6f9c-4b4a-a7db-c0d251b9fa15,2026-09-28 10:38:49.886057+00,Faisal Ahmed,faisal.ahmed@example.com,Cust$1003,Customer,true
+920fddb0-c3fb-40a8-b28a-85e53e16ca68,2026-09-28 08:55:29.271733+00,Muhammad Shoaib Alam,shoaibalam1373@gmail.com,msh1373,Seller,true
+9d6fc128-70ad-4c5b-b8ec-d1e362cafb16,2026-09-28 10:38:49.886057+00,Lakshmi Pillai,lakshmi.pillai@example.com,Cust@1004,Customer,true
+ae70d239-81be-4d6c-89fd-e2f473dbac17,2026-09-28 10:38:49.886057+00,Jithin George,jithin.george@example.com,Cust#1005,Customer,false
+b27d94e0-15c3-4a8f-8e76-2d9f4c6a3b02,2026-09-28 10:26:24.633528+00,Fathima Nazar,fathima.nazar@example.com,Fath#5678,Seller,true
+bf81e34a-92cf-4e7d-9a0e-f3a584ecbd18,2026-09-28 10:38:49.886057+00,Shabana Beevi,shabana.beevi@example.com,Cust$1006,Customer,true
+c092f45b-a3d0-4f8e-ab1f-04b695fdce19,2026-09-28 10:38:49.886057+00,Hari Narayanan,hari.narayanan@example.com,Cust@1007,Customer,true
+c9e6a3d1-48f2-4b07-a5d3-7f1e2b8c9d03,2026-09-28 10:26:24.633528+00,Rahul Krishnan,rahul.krishnan@example.com,Rahul@2024,Seller,true
+d1a3056c-b4e1-4a9f-bc20-15c7a60edf20,2026-09-28 10:38:49.886057+00,Reshma Das,reshma.das@example.com,Cust#1008,Customer,false
+d41b7f68-92a5-4c3e-b8f0-6a3d5e1c7b04,2026-09-28 10:26:24.633528+00,Anjali Nair,anjali.nair@example.com,Anj$9012,Seller,false
+e58c2a97-3d61-4f9b-96e4-1b7a8d2f4c05,2026-09-28 10:26:24.633528+00,Mohammed Shafi,mohammed.shafi@example.com,Shafi@3456,Seller,true
+f6a9d3b4-071e-4e85-8c2a-9d4f6b1e3a06,2026-09-28 10:26:24.633528+00,Sreelakshmi P,sreelakshmi.p@example.com,Sree#7890,Seller,true

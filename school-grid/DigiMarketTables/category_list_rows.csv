@@ -1,0 +1,20 @@
+category_id,name,slug,description,is_active,display_order,created_at,updated_at,seller_uuid
+10ab9de7-c4f2-4ef9-8d89-48e4baa9558f,Electronics,electronics,"Headphones, speakers, cameras and smart devices",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,51505a39-d978-472a-a289-2e4568d00b87
+15f020b0-dd6f-4e86-971c-916c949d8c54,Sports & Fitness,sports-fitness,"Sports equipment, fitness products and accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+1654b603-70a4-4d23-bf7f-bc69ae979162,Books & Stationery,books-stationery,"Books, notebooks, pens and office supplies",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+20eea576-bdce-4797-b77d-5d5987117d77,Pet Supplies,pet-supplies,"Pet food, toys, grooming and accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,51505a39-d978-472a-a289-2e4568d00b87
+264e0dd2-2530-4dec-820b-e2f76ae3d555,Office & Business,office-business,"Office supplies, printers and desk accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+2728c90a-9eae-40f2-a4f6-6a5c0cb83aa0,Electrical & Tools,electrical-tools,"Tools, lighting, cables and electrical products",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,51505a39-d978-472a-a289-2e4568d00b87
+42dd877e-c33e-4ded-8aa5-e5e1bd8a7233,Home & Kitchen,home-kitchen,"Home products, kitchen items and appliances",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+45c998f4-4690-4cd1-9572-e575c06aea87,Islamic & Religious,islamic-religious,"Islamic books, prayer items, attar and tasbih",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+4ced1180-c87f-44e2-82f7-e8c2a78dc17c,Beauty & Personal Care,beauty-personal-care,"Skincare, haircare, makeup and grooming",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+6db613f3-2048-48e1-9766-77dc3501e50b,Toys & Games,toys-games,"Toys, educational products and games",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,51505a39-d978-472a-a289-2e4568d00b87
+77f69ad6-6f07-4531-8f66-80c15d228267,Mobiles & Tablets,mobiles-tablets,"Smartphones, tablets and mobile accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+7eb402ef-3fd5-4262-86ae-836946297c8f,Garden & Outdoor,garden-outdoor,"Gardening tools, plants and outdoor products",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+9b3ed0d0-44a9-4790-94ca-6c4c81813efe,Fashion,fashion,"Clothing, shoes, bags and fashion accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+9bef2034-c4f6-4b2a-a1b1-cabeefd3a708,Baby & Kids,baby-kids,"Baby care, kids clothing, toys and feeding products",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+a197f8d3-5787-4b28-81be-e326a7d47153,Travel & Luggage,travel-luggage,"Suitcases, backpacks and travel accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+a52f57bf-1f4e-44e1-9b57-ec0d1b3b1c61,Computers & Accessories,computers-accessories,"Laptops, computers and computer accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+ac2fd223-0800-4831-bc24-c262b3758b52,Deals & Offers,deals-offers,"Flash deals, best sellers and clearance products",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+ec848b7b-39df-4abe-af53-c2f73002c9da,Automotive,automotive,"Car, bike and automotive accessories",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,
+eea0e0a7-7ef2-4ab5-a786-33ba01f468e6,Grocery & Food,grocery-food,"Groceries, snacks, beverages and food products",true,0,2026-09-21 03:45:56.262063+00,2026-09-21 03:45:56.262063+00,

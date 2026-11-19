@@ -1,0 +1,142 @@
+
+
+create table public."DigiBazaar_Users_Table" (
+  user_id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  user_full_name character varying null default 'User''s_Name'::character varying,
+  user_email character varying null default 'user@gmail.com'::character varying,
+  user_password character varying null default 'user123'::character varying,
+  user_role character varying null default 'Admin'::character varying,
+  is_active boolean null default true,
+  constraint "DigiBazaar_Users_Table_pkey" primary key (user_id)
+) TABLESPACE pg_default;
+
+
+
+
+
+create table public."Offer_Box" (
+  offer_id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  offer_title character varying null default 'Offer Name'::character varying,
+  off_percentage smallint null default '5'::smallint,
+  product_uuid uuid null,
+  seller_uuid uuid null,
+  offer_starts date null,
+  offer_end date null,
+  is_active boolean null default true,
+  new_price double precision null,
+  constraint "Offer_Box_pkey" primary key (offer_id),
+  constraint "Offer_Box_product_uuid_fkey" foreign KEY (product_uuid) references "productsBox" (product_id) on update CASCADE on delete CASCADE,
+  constraint "Offer_Box_seller_uuid_fkey" foreign KEY (seller_uuid) references "SellerInfo" (seller_id) on update CASCADE on delete CASCADE
+) TABLESPACE pg_default;
+
+
+create table public."SellerInfo" (
+  seller_id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  seller_user_id uuid null,
+  "seller_fullName" character varying null default 'Seller_Name'::character varying,
+  shop_name character varying null default 'Seller Shop Name'::character varying,
+  seller_contact character varying null default '+91 000-00 000-00'::character varying,
+  seller_whats_app character varying null default '+91 000-00 000-'::character varying,
+  num_articles_by_category integer null default 0,
+  num_articles_by_uploaded integer null default 0,
+  num_articles_by_selled integer null default 0,
+  total_expanded_atical_const bigint null default '0'::bigint,
+  total_gained_atical_const bigint null default '0'::bigint,
+  total_profites_money bigint null default '0'::bigint,
+  constraint "SellerInfo_pkey" primary key (seller_id),
+  constraint "SellerInfo_seller_user_id_fkey" foreign KEY (seller_user_id) references "DigiBazaar_Users_Table" (user_id) on update CASCADE on delete CASCADE
+) TABLESPACE pg_default;
+
+create table public."Sold_Product_FeedBack" (
+  "feedBack_id" uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  client_uuid uuid null,
+  "feedBack_text" text null default 'Feed Back Explain > 30 words'::text,
+  rates_stars smallint null default '5'::smallint,
+  product_uuid uuid null,
+  review_img_01 text null,
+  review_img_02 text null,
+  review_img_03 text null,
+  constraint "Sold_Product_FeedBack_pkey" primary key ("feedBack_id"),
+  constraint "Sold_Product_FeedBack_client_uuid_fkey" foreign KEY (client_uuid) references "DigiBazaar_Users_Table" (user_id) on delete RESTRICT,
+  constraint "Sold_Product_FeedBack_product_uuid_fkey" foreign KEY (product_uuid) references "productsBox" (product_id) on update CASCADE on delete RESTRICT
+) TABLESPACE pg_default;
+
+
+create table public.category_list (
+  category_id uuid not null default gen_random_uuid (),
+  name text not null,
+  slug text not null,
+  description text null,
+  is_active boolean not null default true,
+  display_order integer not null default 0,
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone not null default now(),
+  seller_uuid uuid null default '51505a39-d978-472a-a289-2e4568d00b87'::uuid,
+  constraint category_list_pkey primary key (category_id),
+  constraint category_list_name_key unique (name),
+  constraint category_list_slug_key unique (slug),
+  constraint category_list_seller_uuid_fkey foreign KEY (seller_uuid) references "SellerInfo" (seller_id) on update CASCADE on delete CASCADE
+) TABLESPACE pg_default;
+
+
+create table public."productsBox" (
+  product_id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  product_title character varying null default 'Default_Article'::character varying,
+  product_category uuid null,
+  product_img_url_01 text null,
+  product_img_url_02 text null,
+  product_img_url_03 text null,
+  product_img_url_04 text null,
+  product_cp bigint null default '0'::bigint,
+  product_sp bigint null default '0'::bigint,
+  is_active boolean null default true,
+  total_selled integer null default 0,
+  product_status character varying null default 'Available'::character varying,
+  product_count integer null default 0,
+  total_carted integer null default 0,
+  seller_uuid uuid null,
+  constraint "productsBox_pkey" primary key (product_id),
+  constraint "productsBox_product_category_fkey" foreign KEY (product_category) references category_list (category_id) on update CASCADE on delete CASCADE,
+  constraint "productsBox_seller_uuid_fkey" foreign KEY (seller_uuid) references "DigiBazaar_Users_Table" (user_id) on update CASCADE on delete CASCADE
+) TABLESPACE pg_default;
+
+create table public.school_user_profile (
+  profile_uuid uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  user_uuid uuid null,
+  full_name text null,
+  user_password text null,
+  school_id uuid null,
+  user_role text null,
+  is_active boolean null default true,
+  constraint school_user_profile_pkey primary key (profile_uuid),
+  constraint school_user_profile_school_id_fkey foreign KEY (school_id) references "OurSchools" (school_id) on update CASCADE on delete CASCADE,
+  constraint school_user_profile_user_uuid_fkey foreign KEY (user_uuid) references auth.users (id) on update CASCADE on delete RESTRICT
+) TABLESPACE pg_default;
+
+create table public.user_roles (
+  user_id uuid not null,
+  role_name text not null,
+  assigned_at timestamp with time zone not null default now(),
+  constraint user_roles_pkey primary key (user_id),
+  constraint user_roles_role_name_fkey foreign KEY (role_name) references app_roles (role_name) on update CASCADE,
+  constraint user_roles_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+
+
+
+
+
+
+
+
+
+
+
+

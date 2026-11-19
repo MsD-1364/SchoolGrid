@@ -1,0 +1,3 @@
+product_id,created_at,product_title,product_category,product_img_url_01,product_img_url_02,product_img_url_03,product_img_url_04,product_cp,product_sp,is_active,total_selled,product_status,product_count,total_carted,seller_uuid
+76204e23-cf21-44f5-af14-8be287cab10f,2026-09-28 10:34:48.970642+00,Wireless Bluetooth Earbuds,,https://loremflickr.com/600/600/earbuds?lock=11,https://loremflickr.com/600/600/earbuds?lock=11,https://loremflickr.com/600/600/earbuds?lock=11,https://loremflickr.com/600/600/earbuds?lock=11,0,0,true,0,Available,0,0,920fddb0-c3fb-40a8-b28a-85e53e16ca68
+d6b01afd-c872-46b7-aba1-fe3021f117ce,2026-09-28 10:27:56.954763+00,gdfg,,dfgdf,dfgdfg,dfg,dfgdfg,0,0,true,0,dfgdf,0,0,
