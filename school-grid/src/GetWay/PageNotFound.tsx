@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export interface NotFoundPageProps {
@@ -10,21 +11,28 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({
   homeHref = '/dashboard',
   loginHref = '/',
 }) => {
+  const navigate = useNavigate();
+
   const handleGoBack = (): void => {
     if (window.history.length > 1) {
-      window.history.back();
+      navigate(-1);
     } else {
-      window.location.href = homeHref;
+      navigate(homeHref, { replace: true });
     }
   };
 
+  const go = (to: string) => (e: { preventDefault: () => void }): void => {
+    e.preventDefault();
+    navigate(to);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 overflow-hidden">
+    <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-8 text-center"
+        className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8 text-center"
       >
         {/* Status Badge & 404 Display */}
         <motion.div
@@ -73,6 +81,7 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             href={homeHref}
+            onClick={go(homeHref)}
             className="w-full h-11 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-sm hover:shadow transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             Go to Dashboard
@@ -93,6 +102,7 @@ export const NotFoundPage: FC<NotFoundPageProps> = ({
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               href={loginHref}
+              onClick={go(loginHref)}
               className="h-10 flex items-center justify-center bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-sm rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Login Gateway

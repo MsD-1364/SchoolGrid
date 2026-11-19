@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { PanelLeftClose, PanelLeftOpen, LogOut, School, Loader2, type LucideIcon } from "lucide-react";
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  LogOut,
+  School,
+  Loader2,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { SupaBaseClientFunction } from "../lib/SupaBaseClient/SupaBaseClientFunction";
 
 export interface NavItem {
@@ -10,21 +18,29 @@ export interface NavItem {
 }
 
 interface SidebarProps {
-  navItems: NavItem[]; // sent from the Dashboard
-  collapsed: boolean;
-  onToggle: () => void;
-  loginPath?: string; // where to go after logout
+  navItems: NavItem[]; // sent from the Dashboard (first item = home)
+  collapsed: boolean; // desktop (lg+) icon-only mode
+  onToggle: () => void; // desktop collapse / expand
+  mobileOpen: boolean; // phone + tablet drawer state
+  onClose: () => void; // close the drawer
+  loginPath?: string;
   title?: string;
   subtitle?: string;
+  userLabel?: string;
 }
 
+/*  < lg  : off-canvas drawer (phones + tablets), always full width labels
+    >= lg : static sidebar, can collapse to an icon rail                    */
 export default function Sidebar({
   navItems,
   collapsed,
   onToggle,
+  mobileOpen,
+  onClose,
   loginPath = "/login",
   title = "EduCloud",
   subtitle = "School Management",
+  userLabel = "Admin User",
 }: SidebarProps) {
   const navigate = useNavigate();
   const supabase = useMemo(() => SupaBaseClientFunction(), []);
@@ -45,96 +61,112 @@ export default function Sidebar({
       console.error("Sign out failed:", err);
     } finally {
       [localStorage, sessionStorage].forEach((store) => {
-        Object.keys(store)
-          .filter((k) => k.startsWith("sb-") || k.includes("supabase"))
-          .forEach((k) => store.removeItem(k));
+        try {
+          Object.keys(store)
+            .filter((k) => k.startsWith("sb-") || k.includes("supabase"))
+            .forEach((k) => store.removeItem(k));
+        } catch {
+          /* storage blocked – ignore */
+        }
       });
       navigate(loginPath, { replace: true });
     }
   };
 
   const initial = (email[0] ?? "A").toUpperCase();
-  const homePath = navItems[0]?.to; // first item is the "Dashboard" home
+  const homePath = navItems[0]?.to;
+  const hideLabel = collapsed ? "lg:hidden" : "";
 
   return (
     <aside
-      className={`flex shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-200 ${
-        collapsed ? "w-16" : "w-56"
+      id="app-sidebar"
+      aria-label="Sidebar"
+      className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-2xl transition-[transform,visibility,width] duration-200 motion-reduce:transition-none ${
+        mobileOpen ? "visible translate-x-0" : "invisible -translate-x-full"
+      } lg:visible lg:static lg:z-auto lg:max-w-none lg:translate-x-0 lg:shadow-none ${
+        collapsed ? "lg:w-16" : "lg:w-56"
       }`}
     >
-      {/* Brand + toggle */}
+      {/* Brand + buttons */}
       <div
-        className={`flex border-b border-slate-200 ${
-          collapsed ? "flex-col items-center gap-3 py-4" : "items-center gap-3 px-5 py-5"
+        className={`flex items-center gap-3 border-b border-slate-200 px-5 py-4 pt-[max(1rem,env(safe-area-inset-top))] ${
+          collapsed ? "lg:flex-col lg:px-0 lg:py-4" : "lg:py-5"
         }`}
       >
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
           <School className="h-5 w-5" />
         </div>
 
-        {!collapsed && (
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold leading-tight text-slate-900">{title}</p>
-            <p className="text-[11px] leading-tight text-slate-500">{subtitle}</p>
-          </div>
-        )}
+        <div className={`min-w-0 flex-1 ${hideLabel}`}>
+          <p className="truncate text-sm font-bold leading-tight text-slate-900">{title}</p>
+          <p className="truncate text-[11px] leading-tight text-slate-500">{subtitle}</p>
+        </div>
 
+        {/* phone / tablet: close drawer */}
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          className="grid h-10 w-10 place-items-center rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:hidden"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        {/* desktop: collapse / expand */}
         <button
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!collapsed}
-          className="rounded p-1 text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="hidden rounded p-1 text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:block"
         >
           {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
         </button>
       </div>
 
       {/* Nav buttons (from props) */}
-      <nav className="flex-1 space-y-1 px-2.5 py-4" aria-label="Main">
+      <nav className="flex-1 space-y-1 overflow-y-auto overscroll-contain px-2.5 py-4" aria-label="Main">
         {navItems.map(({ label, to, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
             end={to === homePath}
+            onClick={onClose}
             title={collapsed ? label : undefined}
             className={({ isActive }) =>
-              `flex w-full items-center rounded-lg py-2 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                collapsed ? "justify-center px-0" : "gap-3 px-3"
-              } ${isActive ? "bg-slate-100 font-medium text-slate-900" : "text-slate-700 hover:bg-slate-50"}`
+              `flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:min-h-0 lg:py-2 ${
+                collapsed ? "lg:justify-center lg:gap-0 lg:px-0" : ""
+              } ${isActive ? "bg-slate-100 font-medium text-slate-900" : "text-slate-700 hover:bg-slate-50 active:bg-slate-100"}`
             }
           >
-            <Icon className="h-4 w-4 shrink-0" />
-            {!collapsed && label}
+            <Icon className="h-5 w-5 shrink-0 lg:h-4 lg:w-4" />
+            <span className={`truncate ${hideLabel}`}>{label}</span>
           </NavLink>
         ))}
       </nav>
 
       {/* User + logout */}
       <div
-        className={`border-t border-slate-200 ${
-          collapsed ? "flex flex-col items-center gap-3 py-4" : "flex items-center gap-3 px-4 py-4"
+        className={`flex items-center gap-3 border-t border-slate-200 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] ${
+          collapsed ? "lg:flex-col lg:px-0" : ""
         }`}
       >
         <div
-          title={collapsed ? email || "Admin User" : undefined}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white"
+          title={collapsed ? email || userLabel : undefined}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white"
         >
           {initial}
         </div>
 
-        {!collapsed && (
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">Admin User</p>
-            <p className="truncate text-[11px] text-slate-500">{email || "—"}</p>
-          </div>
-        )}
+        <div className={`min-w-0 flex-1 ${hideLabel}`}>
+          <p className="truncate text-sm font-medium text-slate-900">{userLabel}</p>
+          <p className="truncate text-[11px] text-slate-500">{email || "—"}</p>
+        </div>
 
         <button
           onClick={handleLogout}
           disabled={loggingOut}
           aria-label="Log out"
           title="Log out"
-          className="rounded p-1 text-slate-600 hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60"
+          className="grid h-10 w-10 place-items-center rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:opacity-60 lg:h-8 lg:w-8"
         >
           {loggingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
         </button>

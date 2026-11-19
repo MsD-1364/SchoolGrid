@@ -1,143 +1,140 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { SupaBaseClientFunction } from '../lib/SupaBase/SupaBaseClient';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Loader2, ShieldAlert } from 'lucide-react';
+import { SupaBaseClientFunction } from '../lib/SupaBaseClient/SupaBaseClientFunction';
+import { resolveUserRoleAccess } from '../lib/auth/resolveUserRole';
 
-export type UserRole = 'SuperAdmin' | 'School';
-
-export interface ProtectedRouteProps {
+interface ProtectedRouteProps {
   children: ReactNode;
-  allowedRoles?: UserRole[];
-  loginHref?: string;
-  unauthorizedHref?: string;
+  /** Roles allowed on this route. Leave empty to allow any signed-in user with an active role. */
+  allowedRoles?: string[];
+  loginPath?: string;
 }
 
-interface ProfileRoleRow {
-  role: UserRole | null;
+type Status =
+  | { state: 'checking' }
+  | { state: 'anonymous' }
+  | { state: 'allowed' }
+  | { state: 'denied'; role: string; dashboardPath: string }
+  | { state: 'error'; message: string };
+
+function Screen({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-h-dvh items-center justify-center bg-slate-50 p-4">
+      <div className="flex w-full max-w-sm flex-col items-center gap-3 rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-xl">
+        {children}
+      </div>
+    </div>
+  );
 }
 
-const DEFAULT_ALLOWED_ROLES: UserRole[] = ['SuperAdmin', 'School'];
-
-const ROLE_DASHBOARD_MAP: Record<UserRole, string> = {
-  SuperAdmin: '/super-admin-dashboard',
-  School: '/school-admin-dashboard',
-};
-
-export const ProtectedRoute: FC<ProtectedRouteProps> = ({
+export default function ProtectedRoute({
   children,
-  allowedRoles = DEFAULT_ALLOWED_ROLES,
-  loginHref = '/',
-  unauthorizedHref = '/unauthorized',
-}) => {
-  const [authorized, setAuthorized] = useState<boolean>(false);
-  const [checking, setChecking] = useState<boolean>(true);
-  const [statusText, setStatusText] = useState<string>('Checking session & permissions...');
+  allowedRoles,
+  loginPath = '/login',
+}: ProtectedRouteProps) {
+  const location = useLocation();
+  const [status, setStatus] = useState<Status>({ state: 'checking' });
+
+  // stable dependency for the effect
+  const rolesKey = (allowedRoles ?? []).join('|');
 
   useEffect(() => {
-    let isMounted = true;
+    let active = true;
+    const supabase = SupaBaseClientFunction();
 
-    const verifyAccess = async (): Promise<void> => {
+    const verify = async (): Promise<void> => {
       try {
-        const supabase = SupaBaseClientFunction();
-
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-        if (userError || !userData.user) {
-          if (isMounted) {
-            window.location.href = loginHref;
-          }
+        // getUser() validates the token with Supabase (safer than getSession alone)
+        const { data, error } = await supabase.auth.getUser();
+        if (!active) return;
+        if (error || !data.user) {
+          setStatus({ state: 'anonymous' });
           return;
         }
 
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', userData.user.id)
-          .single<ProfileRoleRow>();
+        const { role, dashboardPath } = await resolveUserRoleAccess(
+          data.user.id,
+          data.user.user_metadata?.role,
+          data.user.app_metadata?.role
+        );
+        if (!active) return;
 
-        if (profileError || !profile?.role) {
-          if (isMounted) {
-            setStatusText('Unable to verify role. Redirecting...');
-            setTimeout(() => {
-              if (isMounted) {
-                window.location.href = unauthorizedHref;
-              }
-            }, 1000);
-          }
-          return;
+        const roles = rolesKey ? rolesKey.split('|') : [];
+        if (roles.length === 0 || roles.includes(role)) {
+          setStatus({ state: 'allowed' });
+        } else {
+          setStatus({ state: 'denied', role, dashboardPath });
         }
-
-        const hasAccess = allowedRoles.includes(profile.role);
-
-        if (!hasAccess) {
-          // Send user to their own dashboard if they hold a valid role on a restricted route
-          const fallbackDashboard = ROLE_DASHBOARD_MAP[profile.role] ?? unauthorizedHref;
-          if (isMounted) {
-            setStatusText('Role restricted for this page. Redirecting...');
-            setTimeout(() => {
-              if (isMounted) {
-                window.location.href = fallbackDashboard;
-              }
-            }, 1000);
-          }
-          return;
-        }
-
-        if (isMounted) {
-          setAuthorized(true);
-          setChecking(false);
-        }
-      } catch {
-        if (isMounted) {
-          window.location.href = loginHref;
+      } catch (err) {
+        if (active) {
+          setStatus({
+            state: 'error',
+            message: err instanceof Error ? err.message : 'Could not verify your access.',
+          });
         }
       }
     };
 
-    void verifyAccess();
+    void verify();
+
+    // Logged out in another tab / session expired -> back to login
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT' && active) setStatus({ state: 'anonymous' });
+    });
 
     return () => {
-      isMounted = false;
+      active = false;
+      sub.subscription.unsubscribe();
     };
-  }, [allowedRoles, loginHref, unauthorizedHref]);
+  }, [rolesKey]);
 
-  if (checking) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 12, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="max-w-sm w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col items-center gap-3 text-center"
-        >
-          <svg
-            className="animate-spin h-6 w-6 text-indigo-600"
-            fill="none"
-            viewBox="0 0 24 24"
+  switch (status.state) {
+    case 'checking':
+      return (
+        <Screen>
+          <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
+          <p className="text-sm font-medium text-slate-700">Checking session &amp; permissions...</p>
+        </Screen>
+      );
+
+    case 'anonymous':
+      return <Navigate to={loginPath} replace state={{ from: location.pathname }} />;
+
+    case 'denied':
+      return (
+        <Screen>
+          <ShieldAlert className="h-7 w-7 text-amber-500" />
+          <h1 className="text-base font-semibold text-slate-900">No access to this area</h1>
+          <p className="text-sm text-slate-500">
+            Your account role is <span className="font-medium text-slate-700">{status.role}</span>, which
+            can't open this page.
+          </p>
+          <Link
+            to={status.dashboardPath}
+            className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg bg-indigo-600 text-sm font-medium text-white hover:bg-indigo-700"
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-          <p className="text-sm font-medium text-slate-700">{statusText}</p>
-        </motion.div>
-      </div>
-    );
+            Go to my dashboard
+          </Link>
+        </Screen>
+      );
+
+    case 'error':
+      return (
+        <Screen>
+          <ShieldAlert className="h-7 w-7 text-rose-500" />
+          <p className="text-sm text-slate-700">{status.message}</p>
+          <Link
+            to={loginPath}
+            replace
+            className="mt-2 inline-flex h-11 w-full items-center justify-center rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Back to login
+          </Link>
+        </Screen>
+      );
+
+    default:
+      return <>{children}</>;
   }
-
-  if (!authorized) {
-    return null;
-  }
-
-  return <>{children}</>;
-};
-
-export default ProtectedRoute;
+}

@@ -1,4 +1,5 @@
-import React, { FC, FormEvent, useState } from 'react';
+import { useState, type ChangeEvent, type FC, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SupaBaseClientFunction } from '../lib/SupaBaseClient/SupaBaseClientFunction';
 import { resolveUserRoleAccess } from '../lib/auth/resolveUserRole';
@@ -9,6 +10,7 @@ const wait = (ms: number): Promise<void> =>
   });
 
 export const GetWay: FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,7 +53,7 @@ export const GetWay: FC = () => {
 
       // Keep success banner visible for 2 seconds before navigating
       await wait(2000);
-      window.location.href = dashboardPath;
+      navigate(dashboardPath, { replace: true }); // client-side, no page reload
     } catch (err: unknown) {
       setLoading(false);
       setSuccessMessage(null);
@@ -85,12 +87,12 @@ export const GetWay: FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 overflow-hidden">
+    <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-8"
+        className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-6 sm:p-8"
       >
         <div className="text-center mb-8">
           <motion.h1
@@ -151,11 +153,11 @@ export const GetWay: FC = () => {
                 name="userName"
                 id="userName"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 placeholder="name@school.com"
                 required
                 disabled={loading}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all disabled:opacity-60"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all disabled:opacity-60"
               />
             </div>
 
@@ -171,11 +173,11 @@ export const GetWay: FC = () => {
                 name="userPassword"
                 id="userPassword"
                 value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 disabled={loading}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all disabled:opacity-60"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all disabled:opacity-60"
               />
             </div>
           </div>
