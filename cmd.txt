@@ -15,3 +15,6 @@ export default defineConfig({
 npm i react-router-dom
 
 npm i @supabase/supabase-js
+
+VITE_SUPABASE_URL = https://kwoscsmdyyelzoioueho.supabase.co
+VITE_SUPABASE_ANON_KEY = sb_publishable_WXynZIsxN1othJesFXgPKQ_5vRu_YnM
