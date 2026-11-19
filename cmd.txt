@@ -1,3 +1,6 @@
+npm create vite@latest school-grid
+cd school-grid
+
 npm install tailwindcss @tailwindcss/vite
 
 import { defineConfig } from 'vite'
