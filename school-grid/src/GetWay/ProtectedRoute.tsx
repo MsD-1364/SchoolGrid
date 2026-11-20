@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { Loader2, ShieldAlert } from 'lucide-react';
 import { SupaBaseClientFunction } from '../lib/SupaBaseClient/SupaBaseClientFunction';
-import { resolveUserRoleAccess } from '../lib/auth/resolveUserRole';
 
 interface ProtectedRouteProps {
   children: ReactNode;

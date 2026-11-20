@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import GetWay from './GetWay/GetWay';
-import AuthCallback from './lib/auth/AuthCallBack';
 import ProtectedRoute from './GetWay/ProtectedRoute';
 import PageNotFound from './GetWay/PageNotFound';
 

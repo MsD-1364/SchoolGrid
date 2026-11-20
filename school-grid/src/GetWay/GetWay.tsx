@@ -2,7 +2,6 @@ import { useState, type ChangeEvent, type FC, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SupaBaseClientFunction } from '../lib/SupaBaseClient/SupaBaseClientFunction';
-import { resolveUserRoleAccess } from '../lib/auth/resolveUserRole';
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
@@ -43,11 +42,6 @@ export const GetWay: FC = () => {
       // Brief delay so the spinner feels smooth and intentional
       await wait(600);
 
-      const { role, dashboardPath } = await resolveUserRoleAccess(
-        userId,
-        authData.user?.user_metadata?.role,
-        authData.user?.app_metadata?.role
-      );
 
       setSuccessMessage(`Signed in as ${role}. Redirecting to dashboard...`);
 
